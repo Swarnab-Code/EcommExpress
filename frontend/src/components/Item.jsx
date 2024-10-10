@@ -4,11 +4,11 @@ import { Link } from 'react-router-dom'
 import { ShopContext } from '../context/ShopContext'
 
 const Item = ({ product }) => {
-	const { cartItems, addToCart, removeFromCart} = useContext(ShopContext)
+	const { cartItems, addToCart, removeFromCart, url } = useContext(ShopContext)
 	return (
 		<div className='shadow-sm'>
 			<div className='relative group'>
-				<img src={product.image} alt="" className='rounded-tl-2xl rounded-tr-2xl' />
+				<img src={url + "/images/" + product.image} alt="" className='rounded-tl-2xl rounded-tr-2xl' />
 				<div className='absolute right-3 bottom-3 flexCenter gap-x-2'>
 					<Link to={`/product/${product._id}`} className='bg-white h-8 w-8 p-2 rounded-full shadow-inner cursor-pointer opacity-0 group-hover:opacity-100 transition-all duration-500'>
 						<FaUpRightAndDownLeftFromCenter />
