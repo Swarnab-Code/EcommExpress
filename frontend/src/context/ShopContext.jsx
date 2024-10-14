@@ -40,8 +40,9 @@ const ShopContextProvider = (props) => {
 		async function loadData() {
 			await fetchProductList()
 
-			if (localStorage.getItem("token")) {
-				setToken(localStorage.getItem("token"))
+			const token = localStorage.getItem("token");
+			if (token) {
+				setToken(token)
 			}
 		}
 		loadData()
