@@ -1,48 +1,125 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { ShopContext } from '../context/ShopContext'
+import axios from 'axios'
 
 const Order = () => {
-	const { getTotalCartAmount, all_products, cartItems } = useContext(ShopContext)
+	const { getTotalCartAmount, all_products, cartItems, url, token } = useContext(ShopContext)
+
+	const [data, setData] = useState({
+		firstName: '',
+		lastName: '',
+		email: '',
+		street: '',
+		city: '',
+		state: '',
+		zipcode: '',
+		country: '',
+		phone: '',
+	})
+
+	const onChangeHandler = (event) => {
+		const name = event.target.name
+		const value = event.target.value
+		setData(data => ({ ...data, [name] : value }))
+	}
+
+	// useEffect(() => {
+	// 	console.log(data)
+	// },[data])
+
+	const placeOrder = async (event) => {
+		event.preventDefault()
+		let orderItems = []
+		all_products.map((item) => {
+			if (cartItems[item._id] > 0) {
+				let itemInfo = item
+				itemInfo['quantity'] = cartItems[item._id]
+				orderItems.push(itemInfo)
+			}
+		})
+		// console.log(orderItems)
+		let orderData = {
+			address: data,
+			items: orderItems,
+			amount: getTotalCartAmount() + 2,
+		}
+		let response = await axios.post(`${url}/api/order/place`, orderData, { headers: { token } })
+		if (response.data.success) {
+			const { session_url } = response.data;
+			window.location.replace(session_url)
+		} else {
+			alert("Error while placing order")
+		}
+	}
+
 	return (
 		<section className='max-padd-container py-28 xl:py-32'>
-			<form className='flex flex-col xl:flex-row gap-20 xl:gap-28'>
+			<form onSubmit={placeOrder} className='flex flex-col xl:flex-row gap-20 xl:gap-28'>
 				{/* delivery information */}
 				<div className='flex flex-col flex-1 gap-3 text-[95%]'>
 					<h3 className='bold-28 mb-4'>Delivery Information</h3>
 					<div className='flex gap-3'>
 						<input 
+							required
+							onChange={onChangeHandler}
+							name="firstName"
+							value={data.firstName}
 							type="text" 
 							placeholder='First name' 
 							className='ring-1 ring-slate-900/15 p-1 pl-3 rounded-sm outline-none w-1/2' 
 						/>
 						<input 
+							required
+							onChange={onChangeHandler}
+							name="lastName"
+							value={data.lastName}
 							type="text" 
 							placeholder='Last name' 
 							className='ring-1 ring-slate-900/15 p-1 pl-3 rounded-sm outline-none w-1/2' 
 						/>
 					</div>
 					<input 
+						required
+						onChange={onChangeHandler}
+						name="email"
+						value={data.email}
 						type="email" 
 						placeholder='Email address' 
 						className='ring-1 ring-slate-900/15 p-1 pl-3 rounded-sm outline-none' 
 					/>
 					<input 
+						required
+						onChange={onChangeHandler}
+						name="phone"
+						value={data.phone}
 						type="text" 
 						placeholder='Phone number' 
 						className='ring-1 ring-slate-900/15 p-1 pl-3 rounded-sm outline-none' 
 					/>
 					<input 
+						required
+						onChange={onChangeHandler}
+						name="street"
+						value={data.street}
 						type="text" 
 						placeholder='Street' 
 						className='ring-1 ring-slate-900/15 p-1 pl-3 rounded-sm outline-none' 
 					/>
 					<div className="flex gap-3">
 						<input 
+							required
+							onChange={onChangeHandler}
+							name="city"
+							value={data.city}
 							type="text" 
 							placeholder='City' 
 							className='ring-1 ring-slate-900/15 p-1 pl-3 rounded-sm outline-none w-1/2' 
 						/>
 						<input 
+							required
+							onChange={onChangeHandler}
+							name="state"
+							value={data.state}
 							type="text" 
 							placeholder='State' 
 							className='ring-1 ring-slate-900/15 p-1 pl-3 rounded-sm outline-none w-1/2' 
@@ -50,11 +127,19 @@ const Order = () => {
 					</div>
 					<div className='flex gap-3'>
 						<input 
+							required
+							onChange={onChangeHandler}
+							name="zipcode"
+							value={data.zipcode}
 							type="text" 
 							placeholder='Zip code' 
 							className='ring-1 ring-slate-900/15 p-1 pl-3 rounded-sm outline-none w-1/2' 
 						/>
 						<input 
+							required
+							onChange={onChangeHandler}
+							name="country"
+							value={data.country}
 							type="text" 
 							placeholder='Country' 
 							className='ring-1 ring-slate-900/15 p-1 pl-3 rounded-sm outline-none w-1/2' 
@@ -81,7 +166,7 @@ const Order = () => {
 								<h4 className='bold-18'>${getTotalCartAmount() === 0 ? 0 : getTotalCartAmount() + 2}</h4>
 							</div>
 						</div>
-						<button onClick={() => navigate('/order')} className='btn-secondary w-52 rounded'>Proceed to Checkout</button>
+						<button type="submit" className='btn-secondary w-52 rounded'>Proceed to Checkout</button>
 					</div>
 				</div>
 			</form>

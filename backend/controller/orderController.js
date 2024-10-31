@@ -18,7 +18,7 @@ const placeOrder = async (req, res) => {
 		await newOrder.save()
 		await userModel.findByIdAndUpdate(req.body.userId, {cartData: {}})
 
-		const line_item = req.body.items.map((item) => ({
+		const line_items = req.body.items.map((item) => ({
 			price_data: {
 				currency: "inr",
 				product_data: {
@@ -28,7 +28,7 @@ const placeOrder = async (req, res) => {
 			},
 			quantity: item.quantity,
 		}))
-		line_item.push({
+		line_items.push({
 			price_data: {
 				currency: "inr",
 				product_data: {
@@ -40,7 +40,7 @@ const placeOrder = async (req, res) => {
 		})
 
 		const session = await stripe.checkout.sessions.create({
-			line_items: line_item,
+			line_items: line_items,
 			mode: "payment",
 			success_url: `${frontend_url}/verify?success=true&orderId=${newOrder._id}`,
 			cancel_url: `${frontend_url}/verify?success=false&orderId=${newOrder._id}`,

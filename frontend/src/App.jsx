@@ -3,7 +3,7 @@ import Header from "./components/Header"
 import Home from "./pages/Home"
 import Product from "./pages/Product"
 import Cart from './pages/Cart';
-import Order from "./components/Order";
+import Order from "./pages/Order";
 import Verify from "./pages/Verify";
 import MyOrders from "./pages/MyOrders";
 import { useState } from "react";
