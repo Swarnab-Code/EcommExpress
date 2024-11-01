@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { ShopContext } from '../context/ShopContext'
 import axios from 'axios'
+import { useNavigate } from 'react-router-dom';
 
 const Order = () => {
 	const { getTotalCartAmount, all_products, cartItems, url, token } = useContext(ShopContext)
@@ -51,6 +52,16 @@ const Order = () => {
 			alert("Error while placing order")
 		}
 	}
+
+	const navigate = useNavigate()
+
+	useEffect(() => {
+		if (!token) {
+			navigate('/cart')
+		} else if (getTotalCartAmount() === 0) {
+			navigate('/cart')
+		}
+	})
 
 	return (
 		<section className='max-padd-container py-28 xl:py-32'>
