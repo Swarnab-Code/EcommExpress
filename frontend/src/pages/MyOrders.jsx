@@ -56,7 +56,7 @@ const MyOrders = () => {
 									</p>
 								</td>
 								<td className='p-1'>
-									<button className='btn-light rounded-sm !py-2'>
+									<button onClick={fetchOrders} className='btn-light rounded-sm !py-2'>
 										Track
 									</button>
 								</td>
